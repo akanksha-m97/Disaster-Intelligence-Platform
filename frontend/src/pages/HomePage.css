@@ -1,0 +1,19 @@
+.homepage {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.homepage h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.homepage p {
+  font-size: 14px;
+  color: #6b7280;
+  max-width: 520px;
+  line-height: 1.6;
+}

@@ -1,15 +1,8 @@
 import React from "react";
 import {
-  FaTint,
-  FaHome,
-  FaExclamationTriangle,
-  FaMapMarkerAlt,
-  FaChartBar,
-  FaHistory,
   FaShieldAlt,
-  FaBell,
-  FaChevronDown,
   FaSearch,
+  FaExclamationTriangle,
   FaMountain,
   FaPhoneAlt,
   FaUserShield,
@@ -19,6 +12,7 @@ import {
   FaTintSlash,
   FaPlusSquare,
   FaUser,
+  FaTint,
   FaArrowUp,
   FaWater,
   FaBroadcastTower,
@@ -30,57 +24,6 @@ import {
   FaHeadset,
 } from "react-icons/fa";
 import "./EmergencyGuidance.css";
-
-/* ---------- Reusable: Top Navbar ---------- */
-const Navbar = () => {
-  const navItems = [
-    { label: "Dashboard", icon: <FaHome /> },
-    { label: "Report Hazard", icon: <FaExclamationTriangle /> },
-    { label: "Live Map", icon: <FaMapMarkerAlt /> },
-    { label: "Analytics", icon: <FaChartBar /> },
-    { label: "Report History", icon: <FaHistory /> },
-    { label: "Emergency Guidance", icon: <FaShieldAlt />, active: true },
-  ];
-
-  return (
-    <header className="navbar">
-      <div className="navbar-brand">
-        <span className="brand-icon">
-          <FaTint />
-        </span>
-        <div className="brand-text">
-          <h1>JalRakshak AI</h1>
-          <p>Disaster Intelligence Platform</p>
-        </div>
-      </div>
-
-      <nav className="navbar-links">
-        {navItems.map((item) => (
-          <a
-            key={item.label}
-            href="#"
-            className={`nav-link ${item.active ? "active" : ""}`}
-          >
-            <span className="nav-icon">{item.icon}</span>
-            <span className="nav-label">{item.label}</span>
-          </a>
-        ))}
-      </nav>
-
-      <div className="navbar-actions">
-        <button className="icon-btn" aria-label="Notifications">
-          <FaBell />
-          <span className="badge">3</span>
-        </button>
-        <div className="user-chip">
-          <span className="avatar">A</span>
-          <span className="username">Arjun</span>
-          <FaChevronDown className="chevron" />
-        </div>
-      </div>
-    </header>
-  );
-};
 
 /* ---------- Reusable: Hero Section ---------- */
 const Hero = () => {
@@ -403,20 +346,17 @@ const ImportantNotice = () => {
 /* ---------- Page ---------- */
 const EmergencyGuidance = () => {
   return (
-    <div className="eg-page">
-      <Navbar />
-      <main className="eg-main">
-        <Hero />
-        <SafetyCardsSection />
-        <EmergencyContacts />
-        <div className="info-grid">
-          <DuringEmergencyCard />
-          <FirstAidCard />
-          <GeneralTipsCard />
-        </div>
-        <ImportantNotice />
-      </main>
-    </div>
+    <main className="eg-main">
+      <Hero />
+      <SafetyCardsSection />
+      <EmergencyContacts />
+      <div className="info-grid">
+        <DuringEmergencyCard />
+        <FirstAidCard />
+        <GeneralTipsCard />
+      </div>
+      <ImportantNotice />
+    </main>
   );
 };
 

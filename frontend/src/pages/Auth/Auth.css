@@ -1,0 +1,262 @@
+/* src/pages/Auth/Auth.css
+   Deduplicated from the original Auth.css. The original file had
+   .auth-container, .auth-card, and .error defined multiple times in a
+   row (later rules overriding earlier ones via normal CSS cascade —
+   same specificity, later wins). This keeps only the LAST definition of
+   each, which is what was actually rendering. Visual output is identical;
+   nothing here changes how the page looks. */
+
+/* ---- Full screen background + layout ---- */
+.auth-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100vh;
+  background: url("/ocean-bg.jpg") no-repeat center center/cover;
+  padding: 60px 80px;
+  color: white;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.auth-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* dark overlay for legibility over photo */
+  z-index: 0;
+}
+
+/* ---- Left side quote section ---- */
+.quote-section {
+  position: relative;
+  z-index: 1;
+  max-width: 45%;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 40px;
+  text-align: left;
+  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- Login/Register card (right side, glass effect) ---- */
+.auth-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 40px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+/* ---- Language Selector ---- */
+.language-selector {
+  position: relative;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.language-selector label {
+  font-weight: 500;
+}
+
+.language-selector select {
+  width: auto;
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.language-selector select:focus {
+  outline: none;
+  border-color: #00aaff;
+}
+
+.translating {
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* ---- Logo ---- */
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.logo span {
+  color: #00aaff;
+}
+
+/* ---- Headings ---- */
+.auth-card h2 {
+  margin: 10px 0;
+  font-size: 22px;
+}
+.auth-card p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* ---- Inputs ---- */
+.auth-card input,
+.auth-card select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.auth-card input:focus,
+.auth-card select:focus {
+  outline: none;
+  border-color: #00aaff;
+  box-shadow: 0 0 5px rgba(0, 170, 255, 0.3);
+}
+
+/* ---- OTP Row ---- */
+.otp-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 10px 0;
+  gap: 8px;
+  width: 100%;
+  padding-left: 5px;
+}
+
+.otp-row input {
+  margin: 0;
+  width: auto;
+}
+
+.otp-row label {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ---- Submit Button ---- */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #005bea, #00c6fb);
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: opacity 0.3s ease;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---- Support links (forgot password / contact) ---- */
+.support-links {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  font-size: 13px;
+}
+
+.support-links span {
+  color: #0077ff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.support-links span:hover {
+  color: #005bea;
+}
+
+/* ---- Footer (toggle login/signup) ---- */
+.footer {
+  font-size: 14px;
+}
+
+.footer span {
+  color: #0077ff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.footer span:hover {
+  color: #005bea;
+}
+
+/* ---- Error message ---- */
+.error {
+  color: #ff4444;
+  font-size: 14px;
+  margin: 10px 0;
+  padding: 8px;
+  background: #fff5f5;
+  border: 1px solid #ffdddd;
+  border-radius: 6px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .auth-card {
+    width: 90%;
+    padding: 2rem;
+  }
+
+  .language-selector {
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+}
+
+/* ---- RTL support (Arabic, Urdu, etc.) ---- */
+.auth-card[dir="rtl"] {
+  direction: rtl;
+}
+
+.auth-card[dir="rtl"] .language-selector {
+  left: 20px;
+  right: auto;
+}
+
+.auth-card[dir="rtl"] .otp-row {
+  justify-content: flex-end;
+  padding-right: 5px;
+  padding-left: 0;
+}

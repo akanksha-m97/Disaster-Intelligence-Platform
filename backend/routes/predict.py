@@ -16,7 +16,7 @@ class WeatherRequest(BaseModel):
     humidity_percent: float
     wind_speed_kmph: float
     temperature_c: float
-    aqi: float
+    aqi: Optional[float] = None 
 
 
 # ── Request Schema ────────────────────────────────────────────────────────────

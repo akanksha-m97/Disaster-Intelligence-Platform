@@ -537,3 +537,196 @@
     margin-left: 0;
   }
 }
+
+/* ===== Paste these at the bottom of ReportHazard.css ===== */
+
+/* Spinner */
+.rh-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: rh-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.rh-spinner--blue {
+  border-color: rgba(37, 99, 235, 0.25);
+  border-top-color: #2563eb;
+}
+
+@keyframes rh-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Disabled states */
+.rh-analyze-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rh-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Error banner */
+.rh-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.rh-error-banner svg {
+  flex-shrink: 0;
+  stroke: #b91c1c;
+}
+
+/* Saved success banner */
+.rh-saved-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  margin-top: 16px;
+}
+
+/* ===== Add to bottom of ReportHazard.css ===== */
+
+/* Spinner */
+.rh-spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: rh-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+.rh-spinner--blue {
+  border-color: rgba(37,99,235,0.25);
+  border-top-color: #2563eb;
+}
+@keyframes rh-spin { to { transform: rotate(360deg); } }
+
+.rh-analyze-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Error banner */
+.rh-error-banner {
+  display: flex; align-items: center; gap: 10px;
+  background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
+  border-radius: 8px; padding: 12px 16px;
+  font-size: 13.5px; font-weight: 500; margin-bottom: 14px;
+}
+
+/* Progress banner */
+.rh-progress-banner {
+  display: flex; align-items: center; gap: 10px;
+  background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8;
+  border-radius: 8px; padding: 12px 16px;
+  font-size: 13.5px; font-weight: 500; margin-bottom: 14px;
+}
+
+/* Result header row */
+.rh-result-header-row {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 12px;
+  flex-wrap: wrap; margin-bottom: 20px;
+}
+
+/* Saved pill */
+.rh-saved-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: #f0fdf4; border: 1px solid #bbf7d0;
+  color: #15803d; font-size: 12px; font-weight: 600;
+  padding: 5px 12px; border-radius: 20px; white-space: nowrap;
+}
+
+/* ── Weather strip (matches the homepage banner style) ────────────────────── */
+.rh-weather-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  border-radius: 14px;
+  padding: 20px 28px;
+  margin-bottom: 20px;
+}
+
+.rh-ws-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.rh-ws-item:first-child { padding-left: 0; }
+.rh-ws-item:last-child  { padding-right: 0; border-right: none; }
+
+.rh-ws-icon {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.rh-ws-icon svg { filter: brightness(0) invert(1); }
+
+.rh-ws-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.rh-ws-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.1;
+}
+
+.rh-ws-sublabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  opacity: 0.85;
+}
+
+.rh-ws-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .rh-weather-strip {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+  .rh-ws-item {
+    border-right: none;
+    padding: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .rh-weather-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -1,19 +1,483 @@
-.homepage {
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 48px 32px;
-}
+/* ── JalRakshak HomePage ───────────────────────────────────────────────────── */
 
-.homepage h1 {
-  font-size: 26px;
-  font-weight: 700;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.hp-root {
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background: #f8fafc;
+  min-height: 100vh;
   color: #111827;
-  margin-bottom: 12px;
 }
 
-.homepage p {
-  font-size: 14px;
-  color: #6b7280;
-  max-width: 520px;
+/* ── HERO ── */
+.hp-hero {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+    url("/Honepage.jpg");
+
+  background-size: cover;
+ background-position: center 20%;
+  background-repeat: no-repeat;
+
+  color: white;
+  padding: 90px 30px;
+  text-align: center;
+}
+.hp-hero-content {
+  max-width: 680px;
+  margin: auto;
+}
+
+.hp-hero h1 {
+  font-size: 38px;
+  font-weight: 800;
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+
+.hp-hero p {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 28px;
   line-height: 1.6;
+}
+
+.hp-hero-btns {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hp-btn-primary {
+  padding: 12px 26px;
+  background: #fff;
+  color: #1e3a8a;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.hp-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.hp-btn-secondary {
+  padding: 12px 26px;
+  background: transparent;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.hp-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+/* ── STATS BANNER ── */
+.hp-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  padding: 28px 30px;
+  gap: 16px;
+}
+
+.hp-stat {
+  text-align: center;
+}
+
+.hp-stat-val {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.hp-stat-lbl {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* ── LOADING / ERROR ── */
+.hp-loading {
+  text-align: center;
+  padding: 20px;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.hp-error {
+  text-align: center;
+  padding: 14px;
+  color: #dc2626;
+  background: #fee2e2;
+  margin: 16px 30px;
+  border-radius: 10px;
+}
+
+/* ── MAIN LAYOUT ── */
+.hp-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 22px;
+  padding: 28px 30px;
+  max-width: 1400px;
+  margin: auto;
+}
+
+.hp-left,
+.hp-right {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ── CARD ── */
+.hp-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.hp-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.hp-card-head h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.hp-update-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-family: inherit;
+}
+
+.hp-update-btn:hover {
+  background: #1d4ed8;
+}
+
+/* ── WEATHER GRID (kept for any legacy use) ── */
+.hp-weather-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.hp-weather-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e3a8a;
+}
+
+.hp-weather-item span:first-child {
+  font-size: 22px;
+}
+
+/* ── STACKED WEATHER INFO ITEMS (Image 2 style) ── */
+.hp-weather-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hp-info-item {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
+/* ── MAP ── */
+.hp-map-wrap {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.hp-map-iframe {
+  width: 100%;
+  height: 340px;
+  border: none;
+  display: block;
+}
+
+.hp-map-legend {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  display: flex;
+  gap: 14px;
+  font-size: 13px;
+}
+
+.hp-map-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #374151;
+}
+
+.hp-map-legend i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── CHART ── */
+.hp-chart-wrap {
+  height: 280px;
+  position: relative;
+}
+
+.hp-chart-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ── SCROLL ROW (daily / hourly) ── */
+.hp-scroll-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
+}
+
+.hp-scroll-row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.hp-scroll-row::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hp-scroll-row::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.hp-day-item,
+.hp-hour-item {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+  min-width: 80px;
+  transition: background 0.2s;
+}
+
+.hp-day-item:hover,
+.hp-hour-item:hover {
+  background: #eff6ff;
+}
+
+.hp-hour-item {
+  min-width: 68px;
+}
+
+.hp-day-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+}
+
+.hp-day-emoji {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.hp-day-temps {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.hp-day-rain {
+  font-size: 12px;
+  color: #2563eb;
+  margin-top: 4px;
+}
+
+/* ── FOOTER ── */
+.hp-footer {
+  background: #1a47a8;
+  color: #fff;
+  padding: 36px 40px 30px;
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.2fr;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+.hp-footer-col h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.hp-footer-col h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #fff;
+}
+
+.hp-footer-col p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+.hp-footer-col a {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  margin-bottom: 8px;
+  transition: color 0.2s;
+}
+
+.hp-footer-col a:hover {
+  color: #fff;
+}
+
+.hp-footer-bottom {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── NAV LINK USED AS BUTTON (hero + card headers) ── */
+.hp-btn-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* ── QUICK ACTIONS ── */
+.hp-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.hp-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 10px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.hp-action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.hp-action-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.hp-action-danger  { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.hp-action-blue    { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.hp-action-purple  { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+.hp-action-green   { background: linear-gradient(135deg, #22c55e, #15803d); }
+.hp-action-orange  { background: linear-gradient(135deg, #f97316, #c2410c); }
+
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .hp-main  { grid-template-columns: 1fr; }
+  .hp-stats { grid-template-columns: repeat(2, 1fr); }
+  .hp-footer { grid-template-columns: 1fr 1fr; padding: 28px 20px; }
+  .hp-quick-actions { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .hp-hero          { padding: 40px 20px; }
+  .hp-hero h1       { font-size: 26px; }
+  .hp-hero p        { font-size: 14px; }
+  .hp-stats         { grid-template-columns: repeat(2, 1fr); padding: 20px 16px; }
+  .hp-stat-val      { font-size: 24px; }
+  .hp-main          { padding: 16px; gap: 16px; }
+  .hp-map-iframe    { height: 260px; }
+  .hp-footer        { grid-template-columns: 1fr; padding: 28px 16px; }
+  .hp-quick-actions { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .hp-hero          { padding: 30px 14px; }
+  .hp-hero h1       { font-size: 22px; }
+  .hp-stats         { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 16px; }
+  .hp-stat-val      { font-size: 20px; }
+  .hp-card          { padding: 16px; }
+  .hp-btn-primary,
+  .hp-btn-secondary { padding: 10px 18px; font-size: 14px; }
+  .hp-map-legend    { gap: 8px; font-size: 11px; padding: 8px 10px; }
+  .hp-quick-actions { grid-template-columns: repeat(2, 1fr); }
+  .hp-footer        { grid-template-columns: 1fr; }
 }

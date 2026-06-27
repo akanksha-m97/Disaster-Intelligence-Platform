@@ -225,9 +225,11 @@ const ReportHazard = () => {
 
     try {
       const payload = {
-        incident_text: description,
-        latitude:      coords.lat,
-        longitude:     coords.lon,
+       incident_text: description,
+  latitude: coords.lat,   // kept if /predict uses it
+  longitude: coords.lon,   // kept if /predict uses it
+  gps_lat: coords.lat,   // added for save_incident fallback
+  gps_lon: coords.lon,   // added for save_incident fallback
         weather: {
           rainfall_mm:      liveWeather?.rainfall_mm      ?? 0,
           humidity_percent: liveWeather?.humidity_percent ?? 0,

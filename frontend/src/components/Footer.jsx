@@ -17,7 +17,7 @@ const footerStyle = {
 const Footer = () => {
   return (
     <footer style={footerStyle}>
-      <p>© {new Date().getFullYear()} JalRakshak AI. All rights reserved.</p>
+      <p>© {new Date().getFullYear()} DisasterIQ. All rights reserved.</p>
     </footer>
   );
 };

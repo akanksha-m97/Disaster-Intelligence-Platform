@@ -1,13 +1,11 @@
 // src/App.jsx
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import { AuthProvider } from "./context/AuthContext.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { NotificationProvider } from "./context/NotificationContext.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
 
-import Auth from "./pages/Auth/Auth.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import ReportHazard from "./pages/ReportHazard.jsx";
 import LiveMap from "./pages/LiveMap.jsx";
@@ -16,7 +14,6 @@ import ReportHistory from "./pages/ReportHistory.jsx";
 import EmergencyGuidance from "./pages/EmergencyGuidance.jsx";
 
 // Layout for every page that needs the app chrome (Header + Footer).
-// Auth does NOT use this -- it's a standalone full-screen page.
 const AppLayout = ({ children }) => (
   <>
     <Header />
@@ -25,80 +22,68 @@ const AppLayout = ({ children }) => (
   </>
 );
 
-// Route paths -- must match Header.jsx's NAV_ITEMS paths exactly, since
-// Header highlights the active link based on these.
 function App() {
   return (
-    <AuthProvider>
+    <NotificationProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public: login/register, the entry point of the app */}
-          <Route path="/" element={<Auth />} />
+          {/* Direct entry point to dashboard */}
+          <Route path="/" element={<Navigate to="/home" replace />} />
 
-          {/* Protected: everything past login, wrapped in Header/Footer */}
           <Route
             path="/home"
             element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <HomePage />
-                </AppLayout>
-              </ProtectedRoute>
+              <AppLayout>
+                <HomePage />
+              </AppLayout>
             }
           />
           <Route
             path="/report-hazard"
             element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <ReportHazard />
-                </AppLayout>
-              </ProtectedRoute>
+              <AppLayout>
+                <ReportHazard />
+              </AppLayout>
             }
           />
           <Route
             path="/live-map"
             element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <LiveMap />
-                </AppLayout>
-              </ProtectedRoute>
+              <AppLayout>
+                <LiveMap />
+              </AppLayout>
             }
           />
           <Route
             path="/analytics"
             element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <Analytics />
-                </AppLayout>
-              </ProtectedRoute>
+              <AppLayout>
+                <Analytics />
+              </AppLayout>
             }
           />
           <Route
             path="/report-history"
             element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <ReportHistory />
-                </AppLayout>
-              </ProtectedRoute>
+              <AppLayout>
+                <ReportHistory />
+              </AppLayout>
             }
           />
           <Route
             path="/emergency-guidance"
             element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <EmergencyGuidance />
-                </AppLayout>
-              </ProtectedRoute>
+              <AppLayout>
+                <EmergencyGuidance />
+              </AppLayout>
             }
           />
+
+          {/* Catch-all: redirect to home */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
+    </NotificationProvider>
   );
 }
 

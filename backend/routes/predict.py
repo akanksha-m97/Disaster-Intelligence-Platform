@@ -7,7 +7,7 @@ from models.inference import run_inference
 from preprocessing.clean_text import clean_text
 from preprocessing.ner import get_primary_location
 from preprocessing.feature_engineering import validate_weather
-from database.mongodb import save_incident
+from database.mongodb import save_incident, save_notification
 
 router = APIRouter()
 
@@ -187,6 +187,71 @@ async def predict_incident(request: IncidentRequest):
 
     # ── 7. Save to MongoDB ────────────────────────────────────────────────────
     incident_id = await save_incident(incident_doc)
+
+    # ── 8. Automatically Generate Notifications ───────────────────────────────
+    try:
+        loc_str = "Unknown Location"
+        if isinstance(location_result, dict):
+            loc_list = location_result.get("locations") or []
+            if loc_list:
+                loc_str = ", ".join(loc_list)
+            elif location_result.get("source") != "gps" and location_result.get("name"):
+                loc_str = str(location_result.get("name"))
+            elif location_result.get("lat") and location_result.get("lon"):
+                loc_str = f"{location_result['lat']:.3f}, {location_result['lon']:.3f}"
+        elif isinstance(location_result, str) and location_result:
+            loc_str = location_result
+
+        disaster_type = (result.get("disaster_type") or "Hazard").capitalize()
+        severity = (result.get("severity") or "Medium").capitalize()
+        risk_score = float(result.get("risk_score") or 0.0)
+
+        # Trigger 1: A new disaster report is submitted
+        snippet = request.incident_text[:120].strip()
+        if len(request.incident_text) > 120:
+            snippet += "..."
+        await save_notification({
+            "title": f"New Report: {disaster_type}",
+            "description": f"Incident submitted for {loc_str}: \"{snippet}\"",
+            "disaster_type": disaster_type,
+            "location": loc_str,
+            "severity": severity,
+            "source_type": "report",
+            "source_id": incident_id,
+            "read": False,
+            "created_at": datetime.utcnow(),
+        })
+
+        # Trigger 2: A new disaster prediction is generated
+        await save_notification({
+            "title": f"Disaster Prediction: {disaster_type}",
+            "description": f"Model classified {disaster_type} with {result.get('confidence', 0):.1f}% confidence and risk score {risk_score:.1f}%.",
+            "disaster_type": disaster_type,
+            "location": loc_str,
+            "severity": severity,
+            "source_type": "prediction",
+            "source_id": incident_id,
+            "read": False,
+            "created_at": datetime.utcnow(),
+        })
+
+        # Trigger 3: A critical disaster alert is detected (if Critical/High or risk_score >= 70)
+        if severity in ["Critical", "High"] or risk_score >= 70:
+            alert_severity = "Critical" if (severity == "Critical" or risk_score >= 80) else "High"
+            primary_rec = recommendations[0] if recommendations else "Immediate action recommended."
+            await save_notification({
+                "title": f"CRITICAL ALERT: {disaster_type} Warning",
+                "description": f"High risk {disaster_type} ({risk_score:.1f}% risk score) in {loc_str}. {primary_rec}",
+                "disaster_type": disaster_type,
+                "location": loc_str,
+                "severity": alert_severity,
+                "source_type": "alert",
+                "source_id": incident_id,
+                "read": False,
+                "created_at": datetime.utcnow(),
+            })
+    except Exception as e:
+        print(f"Warning: Failed to generate notification: {e}")
 
     return IncidentResponse(
         incident_id=incident_id,

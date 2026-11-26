@@ -347,7 +347,7 @@ const HomePage = () => {
       {/* ── FOOTER ── */}
       <footer className="hp-footer">
         <div className="hp-footer-col">
-          <h3>JalRakshak</h3>
+          <h3>DisasterIQ</h3>
           <p>Protecting coastal communities through real-time monitoring of weather, air quality, and water hazards.</p>
         </div>
         <div className="hp-footer-col">
@@ -360,7 +360,7 @@ const HomePage = () => {
         </div>
         <div className="hp-footer-col">
           <h4>Contact</h4>
-          <p>Email: support@jalrakshak.com</p>
+          <p>Email: support@disasteriq.com</p>
           <p>Phone: +91 1234567890</p>
           <p>Address: New Delhi, India</p>
         </div>

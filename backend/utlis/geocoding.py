@@ -20,7 +20,7 @@ NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 
 # Required by Nominatim's usage policy — replace with your real app/contact.
 HEADERS = {
-    "User-Agent": "JalRakshakAI/1.0 (contact: your-email@example.com)"
+    "User-Agent": "DisasterIQ/1.0 (contact: your-email@example.com)"
 }
 
 # Used to bias results toward India and to keep a sane fallback if

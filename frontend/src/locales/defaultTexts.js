@@ -27,8 +27,8 @@ export const languages = [
 ];
 
 export const defaultTexts = {
-  appName: "JalRakshak",
-  appNameAccent: "Rakshak",
+  appName: "DisasterIQ",
+  appNameAccent: "DisasterIQ",
   welcomeBack: "Welcome Back!",
   createAccount: "Create Account",
   loginSubtitle: "Login to your account",

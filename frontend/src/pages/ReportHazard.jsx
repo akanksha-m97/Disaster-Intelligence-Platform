@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNotifications } from "../context/NotificationContext";
 import "./ReportHazard.css";
 
 const API_BASE = "http://localhost:8000/api/v1";
@@ -149,6 +150,7 @@ const DEFAULT_SEVERITY_CONFIG = {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 const ReportHazard = () => {
+  const notifContext = useNotifications();
   const [description, setDescription]       = useState("");
   const [uploadedImage, setUploadedImage]   = useState(null);
   const [imageFile, setImageFile]           = useState(null);
@@ -253,6 +255,10 @@ const ReportHazard = () => {
       const prediction = await res.json();
       setAnalysisResult(prediction);
       setSavedId(prediction.incident_id);
+
+      if (notifContext?.fetchNotifications) {
+        notifContext.fetchNotifications(true);
+      }
 
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");

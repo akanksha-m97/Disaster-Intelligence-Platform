@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FaTint,
@@ -9,10 +9,11 @@ import {
   FaHistory,
   FaShieldAlt,
   FaBell,
-  FaChevronDown,
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { useNotifications } from "../context/NotificationContext";
+import NotificationDropdown from "./NotificationDropdown";
 import "./Header.css";
 
 // Central place to edit nav items/routes — change paths here if your
@@ -26,8 +27,13 @@ const NAV_ITEMS = [
   { label: "Emergency Guidance", path: "/emergency-guidance", icon: <FaShieldAlt /> },
 ];
 
-const Header = ({ notificationCount = 3, userName = "Arjun", userInitial = "A" }) => {
+const Header = ({ notificationCount }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const bellWrapperRef = useRef(null);
+
+  const { unreadCount } = useNotifications();
+  const displayCount = notificationCount !== undefined ? notificationCount : unreadCount;
 
   // Close the mobile menu automatically if the viewport grows back to
   // desktop size (e.g. rotating a tablet), so it doesn't get stuck open.
@@ -39,6 +45,24 @@ const Header = ({ notificationCount = 3, userName = "Arjun", userInitial = "A" }
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Close notification dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        bellWrapperRef.current &&
+        !bellWrapperRef.current.contains(event.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+    if (dropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -49,7 +73,7 @@ const Header = ({ notificationCount = 3, userName = "Arjun", userInitial = "A" }
             <FaTint />
           </span>
           <div className="brand-text">
-            <h1>JalRakshak AI</h1>
+            <h1>DisasterIQ</h1>
             <p>Disaster Intelligence Platform</p>
           </div>
         </NavLink>
@@ -72,17 +96,24 @@ const Header = ({ notificationCount = 3, userName = "Arjun", userInitial = "A" }
         </nav>
 
         <div className="header-actions">
-          <button className="icon-btn" aria-label="Notifications">
-            <FaBell />
-            {notificationCount > 0 && (
-              <span className="badge">{notificationCount}</span>
-            )}
-          </button>
+          <div className="notification-bell-wrapper" ref={bellWrapperRef}>
+            <button
+              className={`icon-btn ${dropdownOpen ? "active" : ""}`}
+              aria-label="Notifications"
+              aria-expanded={dropdownOpen}
+              onClick={() => setDropdownOpen((prev) => !prev)}
+            >
+              <FaBell />
+              {displayCount > 0 && (
+                <span className="badge">
+                  {displayCount > 99 ? "99+" : displayCount}
+                </span>
+              )}
+            </button>
 
-          <div className="user-chip">
-            <span className="avatar">{userInitial}</span>
-            <span className="username">{userName}</span>
-            <FaChevronDown className="chevron" />
+            {dropdownOpen && (
+              <NotificationDropdown onClose={() => setDropdownOpen(false)} />
+            )}
           </div>
 
           <button

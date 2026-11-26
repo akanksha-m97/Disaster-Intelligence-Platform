@@ -288,3 +288,5 @@ function combineKeywords(twitterData, redditData) {
     .slice(0, 10)
     .map(([keyword, count]) => ({ keyword, count }));
 }
+
+export { notificationService } from "./notificationService";

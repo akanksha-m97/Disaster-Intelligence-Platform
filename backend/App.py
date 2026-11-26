@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from config import settings
-from database.mongodb import connect_db, close_db
+from database.mongodb import connect_db, close_db, seed_notifications_from_incidents_if_empty
 from models.inference import load_models
-from routes import predict, reports, analytics
+from routes import predict, reports, analytics, notifications
 
 
 # ── Lifespan (startup + shutdown) ─────────────────────────────────────────────
@@ -14,6 +14,10 @@ async def lifespan(app: FastAPI):
     # Startup
     print(f"Starting {settings.APP_NAME}...")
     await connect_db()
+    try:
+        await seed_notifications_from_incidents_if_empty()
+    except Exception as e:
+        print(f"Notification seeding skipped or failed: {e}")
     load_models()
     print("All models loaded. API is ready.")
     yield
@@ -40,9 +44,10 @@ app.add_middleware(
 )
 
 # ── Routes ────────────────────────────────────────────────────────────────────
-app.include_router(predict.router,   prefix="/api/v1", tags=["Prediction"])
-app.include_router(reports.router,   prefix="/api/v1", tags=["Reports"])
-app.include_router(analytics.router, prefix="/api/v1", tags=["Analytics"])
+app.include_router(predict.router,       prefix="/api/v1", tags=["Prediction"])
+app.include_router(reports.router,       prefix="/api/v1", tags=["Reports"])
+app.include_router(analytics.router,     prefix="/api/v1", tags=["Analytics"])
+app.include_router(notifications.router, prefix="/api/v1", tags=["Notifications"])
 
 
 # ── Health Check ──────────────────────────────────────────────────────────────

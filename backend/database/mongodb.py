@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
+from bson import ObjectId
 from config import settings
 from utlis.geocoding import geocode_incident_location
 
@@ -99,11 +100,10 @@ def _serialize_doc(doc: dict) -> dict:
       show timestamps ~5.5 hours older than they really are)
     """
     doc["_id"] = str(doc["_id"])
-    if "created_at" in doc and isinstance(doc["created_at"], datetime):
-        # isoformat() → "2024-06-27T10:30:00.123456"  (no timezone info)
-        # + "Z"        → "2024-06-27T10:30:00.123456Z" (JS reads as UTC ✓)
-        doc["created_at"] = doc["created_at"].strftime("%Y-%m-%dT%H:%M:%S.") + \
-                            f"{doc['created_at'].microsecond // 1000:03d}Z"
+    for key in ["created_at", "read_at"]:
+        if key in doc and isinstance(doc[key], datetime):
+            doc[key] = doc[key].strftime("%Y-%m-%dT%H:%M:%S.") + \
+                       f"{doc[key].microsecond // 1000:03d}Z"
     return doc
 
 
@@ -156,3 +156,151 @@ async def get_analytics_summary() -> dict:
         "disaster_distribution": {d["_id"]: d["count"] for d in disaster_dist},
         "severity_distribution": {s["_id"]: s["count"] for s in severity_dist},
     }
+
+
+# ── Notifications Collection ──────────────────────────────────────────────────
+async def save_notification(notification: dict) -> str:
+    db = get_database()
+    col = db[settings.NOTIFICATIONS_COLLECTION]
+
+    if "created_at" not in notification or not notification["created_at"]:
+        notification["created_at"] = datetime.utcnow()
+    if "read" not in notification:
+        notification["read"] = False
+
+    result = await col.insert_one(notification)
+    return str(result.inserted_id)
+
+
+async def get_notifications(limit: int = 50, unread_only: bool = False) -> list:
+    db = get_database()
+    col = db[settings.NOTIFICATIONS_COLLECTION]
+    query = {"read": False} if unread_only else {}
+    cursor = col.find(query).sort("created_at", -1).limit(limit)
+    docs = await cursor.to_list(length=limit)
+    return [_serialize_doc(doc) for doc in docs]
+
+
+async def get_unread_notification_count() -> int:
+    db = get_database()
+    col = db[settings.NOTIFICATIONS_COLLECTION]
+    return await col.count_documents({"read": False})
+
+
+async def mark_notification_as_read(notification_id: str) -> bool:
+    db = get_database()
+    col = db[settings.NOTIFICATIONS_COLLECTION]
+    try:
+        oid = ObjectId(notification_id)
+    except Exception:
+        return False
+    res = await col.update_one(
+        {"_id": oid},
+        {"$set": {"read": True, "read_at": datetime.utcnow()}}
+    )
+    return res.matched_count > 0
+
+
+async def mark_all_notifications_as_read() -> int:
+    db = get_database()
+    col = db[settings.NOTIFICATIONS_COLLECTION]
+    res = await col.update_many(
+        {"read": False},
+        {"$set": {"read": True, "read_at": datetime.utcnow()}}
+    )
+    return res.modified_count
+
+
+async def clear_all_notifications() -> int:
+    db = get_database()
+    col = db[settings.NOTIFICATIONS_COLLECTION]
+    res = await col.delete_many({})
+    return res.deleted_count
+
+
+async def delete_notification(notification_id: str) -> bool:
+    db = get_database()
+    col = db[settings.NOTIFICATIONS_COLLECTION]
+    try:
+        oid = ObjectId(notification_id)
+    except Exception:
+        return False
+    res = await col.delete_one({"_id": oid})
+    return res.deleted_count > 0
+
+
+async def seed_notifications_from_incidents_if_empty() -> int:
+    """
+    If the notifications collection is empty, backfill notifications from existing
+    incidents in the database so the notification panel starts with authentic data.
+    """
+    db = get_database()
+    notif_col = db[settings.NOTIFICATIONS_COLLECTION]
+    count = await notif_col.count_documents({})
+    if count > 0:
+        return 0
+
+    incidents_col = db[settings.INCIDENTS_COLLECTION]
+    cursor = incidents_col.find().sort("created_at", -1).limit(10)
+    incidents = await cursor.to_list(length=10)
+    if not incidents:
+        return 0
+
+    created = 0
+    # Process oldest first so newest ends up with latest timestamps
+    for inc in reversed(incidents):
+        loc_str = "Unknown Location"
+        loc_data = inc.get("location")
+        if isinstance(loc_data, dict):
+            loc_list = loc_data.get("locations") or []
+            if loc_list and len(loc_list) > 0:
+                loc_str = ", ".join(loc_list)
+            elif loc_data.get("source") != "gps" and loc_data.get("name"):
+                loc_str = str(loc_data.get("name"))
+        elif isinstance(loc_data, str) and loc_data:
+            loc_str = loc_data
+
+        severity = (inc.get("severity") or "Medium").capitalize()
+        disaster_type = (inc.get("disaster_type") or "Hazard").capitalize()
+        risk_score = inc.get("risk_score") or 0.0
+        inc_id = str(inc.get("_id"))
+        created_time = inc.get("created_at") or datetime.utcnow()
+        if not isinstance(created_time, datetime):
+            created_time = datetime.utcnow()
+
+        recs = inc.get("recommendations") or []
+        primary_rec = recs[0] if recs else "Stay alert and follow official safety directives."
+
+        # If Critical or High or risk_score >= 70: create Critical Alert notification
+        if severity in ["Critical", "High"] or risk_score >= 70:
+            alert_severity = "Critical" if severity == "Critical" or risk_score >= 80 else "High"
+            alert_doc = {
+                "title": f"CRITICAL ALERT: {disaster_type} Warning",
+                "description": f"High risk {disaster_type} ({risk_score}% risk score) reported in {loc_str}. {primary_rec}",
+                "disaster_type": disaster_type,
+                "location": loc_str,
+                "severity": alert_severity,
+                "source_type": "alert",
+                "source_id": inc_id,
+                "read": False,
+                "created_at": created_time,
+            }
+            await notif_col.insert_one(alert_doc)
+            created += 1
+
+        # Prediction notification
+        pred_doc = {
+            "title": f"Disaster Prediction: {disaster_type}",
+            "description": f"AI model evaluated {disaster_type} with confidence {inc.get('confidence', 90)}% and risk score {risk_score}%.",
+            "disaster_type": disaster_type,
+            "location": loc_str,
+            "severity": severity,
+            "source_type": "prediction",
+            "source_id": inc_id,
+            "read": False,
+            "created_at": created_time,
+        }
+        await notif_col.insert_one(pred_doc)
+        created += 1
+
+    return created

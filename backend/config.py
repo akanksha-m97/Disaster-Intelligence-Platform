@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     # ── Collections ───────────────────────────────────────────────────────────
     INCIDENTS_COLLECTION: str = "incidents"
     ANALYTICS_COLLECTION: str = "analytics"
+    NOTIFICATIONS_COLLECTION: str = "notifications"
 
     # ── Model Paths ───────────────────────────────────────────────────────────
     SAVED_MODELS_DIR: str = "saved_models"
